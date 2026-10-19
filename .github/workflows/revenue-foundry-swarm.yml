@@ -11,18 +11,35 @@ concurrency:
 jobs:
   discover:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Run bounded recursive swarm
+      - name: Restore swarm memory
+        uses: actions/cache/restore@v4
+        with:
+          path: rf-state/
+          key: rf-memory-${{ github.run_id }}
+          restore-keys: |
+            rf-memory-
+      - name: Run persistent research swarm
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RF_MAX_WORKERS: '4'
+          RF_MAX_AI_CALLS: '0'
+          RF_AI_KEY: ${{ secrets.RF_AI_KEY }}
+          RF_AI_URL: ${{ vars.RF_AI_URL }}
+          RF_AI_MODEL: ${{ vars.RF_AI_MODEL }}
         run: python revenue-foundry-swarm/swarm.py
-      - name: Save reports
+      - name: Persist swarm memory
+        if: success()
+        uses: actions/cache/save@v4
+        with:
+          path: rf-state/
+          key: rf-memory-${{ github.run_id }}
+      - name: Upload audit report
         if: always()
         uses: actions/upload-artifact@v4
         with:

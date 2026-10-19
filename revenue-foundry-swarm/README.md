@@ -1,16 +1,15 @@
-# Revenue Foundry Swarm v0.2
+# Revenue Foundry Swarm v0.3
 
-Bounded parallel workers (parent -> hunters -> assessors), GitHub API opportunity discovery, automated six-hour scheduling, read-only reporting. No third-party Python dependencies.
+A bounded scheduled multi-worker research pipeline, with durable-ish memory and optional AI analysis. **Not an independently earning swarm.**
 
-**Not yet LLM-driven or autonomously money-making.** Workers are processes, not independently reasoning AI agents. Child spawning is bounded by RF_MAX_WORKERS, maximum 12; the current workflow uses 4. Never assume advertised bounties are funded. All candidates require manual verification before coding or submission.
+## Live workflow
+GitHub Actions runs every six hours and on manual dispatch. Hunters search public GitHub bounty issues; verifiers reject unsuitable items; an SQLite ledger tracks repeat discoveries. State is restored and saved via GitHub Actions cache (which may be evicted). Artifacts contain the report.
 
-## Run
-python revenue-foundry-swarm/swarm.py
+## AI integration — currently OFF
+Optional OpenAI-compatible chat-completions API is supported. Repository secret: `RF_AI_KEY`. Repository variables: `RF_AI_URL` (full HTTPS endpoint), `RF_AI_MODEL`. The workflow deliberately sets `RF_MAX_AI_CALLS: '0'`. Enable only after the user explicitly approves the selected provider, its terms, potential charges and data sharing; set a small nonzero cap (maximum 8). Do not store API keys in public code.
 
-GitHub: Actions -> Revenue Foundry Swarm -> Run workflow. Reports appear in workflow artifacts. Scheduled runs are best-effort and may be delayed.
+## Limits
+No unrestricted replication, external hosting, external outreach, PRs, proposals, purchases, payments or unapproved code execution. No claim of payment without evidence. Dollar amounts are unverified advertisements; South African eligibility, sponsor funding, and availability require independent confirmation. GitHub Actions cache is not a production database.
 
-## Safety and cost
-No financial commitments, spending, outreach, bids, PRs, credential sharing, crypto transactions or self-replication across external hosts. GitHub Actions public repository standard runners have usage conditions; verify account-specific billing and policy. No model API calls are configured, and no credentials are stored in code.
-
-## Next phases
-Persist state, verify payout and SA eligibility, integrate an approved LLM runtime, add independent QA, approval-gated work submission, payment reconciliation. A real income-generating swarm needs actual paid tasks and a verified payment route.
+## Revenue path
+Verify a genuinely payable issue, confirm sponsor and payment terms, build and test a deliverable, obtain user approval for any external submission, and verify cleared receipt. Until then: **R0 earned**.

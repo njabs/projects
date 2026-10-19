@@ -1,0 +1,32 @@
+name: Revenue Foundry Swarm
+on:
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: rf-swarm
+  cancel-in-progress: false
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run bounded recursive swarm
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RF_MAX_WORKERS: '4'
+        run: python revenue-foundry-swarm/swarm.py
+      - name: Save reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rf-swarm-report
+          path: rf-results/
+          if-no-files-found: warn
+          retention-days: 7
